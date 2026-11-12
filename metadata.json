@@ -1,0 +1,6 @@
+{
+  "name": "Trilha da Reta Numérica",
+  "description": "Jogo educativo interativo para alunos identificarem números e objetos na reta numérica e arrastarem itens para as posições corretas em níveis crescentes de dificuldade.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
