@@ -1,11 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ArrowRight,
   Award,
   BookOpen,
   Check,
   CheckCircle2,
-  Cloud,
   Compass,
   Eye,
   FlaskConical,
@@ -21,18 +20,15 @@ import {
   VolumeX,
   XCircle,
 } from 'lucide-react';
-import { User } from 'firebase/auth';
 import { CustomLabConfig, GameLevel, LevelProgress } from './types/game';
 import { createCustomLabLevel, formatPtNumber, GAME_LEVELS } from './data/levels';
 import { NumberLineCanvas, toPosKey } from './components/NumberLineCanvas';
 import { ObjectIllustration } from './components/ObjectIllustration';
 import { PerformanceReport } from './components/PerformanceReport';
-import { GoogleDriveSync } from './components/GoogleDriveSync';
 import { InteractiveTutorialModal } from './components/InteractiveTutorialModal';
-import { initAuth, googleSignIn } from './services/googleAuth';
 import { sound } from './utils/sound';
 
-type ActiveTab = 'play' | 'levels' | 'lab' | 'drive' | 'guide';
+type ActiveTab = 'play' | 'levels' | 'lab' | 'guide';
 
 const HERO_ILLUSTRATION_PATH = '/src/assets/images/hero_number_line_explorer_1794499155749.jpg';
 
@@ -79,37 +75,6 @@ export default function App() {
     setFeedbackBanner({
       type: 'success',
       message: 'Tutorial concluído com sucesso! Comece arrastando os cartões para a reta numérica.',
-    });
-  };
-
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = initAuth(
-      (user, token) => {
-        setCurrentUser(user);
-        setAccessToken(token);
-      },
-      () => {
-        setCurrentUser(null);
-        setAccessToken(null);
-      }
-    );
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  const handleApplyLoadedProgress = (loadedProgress: Record<number, LevelProgress>) => {
-    setProgressMap((prev) => ({
-      ...prev,
-      ...loadedProgress,
-    }));
-    sound.playLevelComplete();
-    setFeedbackBanner({
-      type: 'success',
-      message: 'Progresso do Google Drive carregado e aplicado com sucesso ao jogo!',
     });
   };
 
@@ -426,16 +391,6 @@ export default function App() {
             </button>
             <button
               type="button"
-              onClick={() => setActiveTab('drive')}
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 cursor-pointer pb-0.5 flex items-center gap-1.5 ${
-                activeTab === 'drive' ? 'text-sky-700 font-semibold border-b-2 border-sky-600' : ''
-              }`}
-            >
-              <Cloud className="w-3.5 h-3.5 text-sky-600" />
-              <span>Google Drive</span>
-            </button>
-            <button
-              type="button"
               onClick={() => setActiveTab('guide')}
               className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 cursor-pointer pb-0.5 ${
                 activeTab === 'guide' ? 'text-sky-700 font-semibold border-b-2 border-sky-600' : ''
@@ -475,44 +430,34 @@ export default function App() {
         <button
           type="button"
           onClick={() => setActiveTab('play')}
-          className={`px-2 py-1 rounded whitespace-nowrap ${
+          className={`px-2.5 py-1 rounded whitespace-nowrap ${
             activeTab === 'play' ? 'text-sky-700 font-semibold bg-sky-50' : ''
           }`}
         >
-          Missão
+          Missão Atual
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('levels')}
-          className={`px-2 py-1 rounded whitespace-nowrap ${
+          className={`px-2.5 py-1 rounded whitespace-nowrap ${
             activeTab === 'levels' ? 'text-sky-700 font-semibold bg-sky-50' : ''
           }`}
         >
-          Níveis
+          Níveis (1–8)
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('lab')}
-          className={`px-2 py-1 rounded whitespace-nowrap ${
+          className={`px-2.5 py-1 rounded whitespace-nowrap ${
             activeTab === 'lab' ? 'text-sky-700 font-semibold bg-sky-50' : ''
           }`}
         >
-          Lab
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('drive')}
-          className={`px-2 py-1 rounded whitespace-nowrap flex items-center gap-1 ${
-            activeTab === 'drive' ? 'text-sky-700 font-semibold bg-sky-50' : ''
-          }`}
-        >
-          <Cloud className="w-3 h-3 text-sky-600" />
-          <span>Drive</span>
+          Laboratório
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('guide')}
-          className={`px-2 py-1 rounded whitespace-nowrap ${
+          className={`px-2.5 py-1 rounded whitespace-nowrap ${
             activeTab === 'guide' ? 'text-sky-700 font-semibold bg-sky-50' : ''
           }`}
         >
@@ -1270,30 +1215,7 @@ export default function App() {
         )}
 
         {/* =========================================================
-            VIEW 4: GOOGLE DRIVE (SYNC & BACKUP)
-           ========================================================= */}
-        {activeTab === 'drive' && (
-          <div className="max-w-4xl mx-auto">
-            <GoogleDriveSync
-              currentUser={currentUser}
-              accessToken={accessToken}
-              progressMap={progressMap}
-              levels={GAME_LEVELS}
-              onApplyLoadedProgress={handleApplyLoadedProgress}
-              onAuthSuccess={(user, token) => {
-                setCurrentUser(user);
-                setAccessToken(token);
-              }}
-              onAuthLogout={() => {
-                setCurrentUser(null);
-                setAccessToken(null);
-              }}
-            />
-          </div>
-        )}
-
-        {/* =========================================================
-            VIEW 5: GUIA PEDAGÓGICO (CONCEPTUAL REFERENCE)
+            VIEW 4: GUIA PEDAGÓGICO (CONCEPTUAL REFERENCE)
            ========================================================= */}
         {activeTab === 'guide' && (
           <div className="max-w-4xl mx-auto space-y-6">

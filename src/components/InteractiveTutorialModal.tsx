@@ -7,7 +7,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Sparkles,
-  Cloud,
   Check,
 } from 'lucide-react';
 import { ObjectIllustration } from './ObjectIllustration';
@@ -119,8 +118,8 @@ export const InteractiveTutorialModal: React.FC<InteractiveTutorialModalProps> =
     },
     {
       id: 4,
-      title: 'Verificação, Pontuação e Google Drive',
-      subtitle: 'Feedback imediato, relatório pedagógico e backup na nuvem',
+      title: 'Verificação, Pontuação e Relatório',
+      subtitle: 'Feedback imediato, estrelas e gráfico de desempenho',
       icon: <Sparkles className="w-6 h-6 text-sky-600" />,
       content: (
         <div className="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -136,11 +135,11 @@ export const InteractiveTutorialModal: React.FC<InteractiveTutorialModalProps> =
 
           <div className="p-3.5 bg-sky-50/70 border border-sky-200 rounded-xl space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-sky-950">
-              <Cloud className="w-4 h-4 text-sky-600 shrink-0" />
-              <span>Google Drive &amp; Relatórios:</span>
+              <Sparkles className="w-4 h-4 text-sky-600 shrink-0" />
+              <span>Relatório de Desempenho e Conquistas:</span>
             </div>
             <p className="text-xs text-sky-900">
-              Acompanhe seu desempenho no <strong>Gráfico de Barras</strong> e salve seu progresso ou exporte relatórios escolares diretamente para sua conta do Google Drive com permissão.
+              Acompanhe seu crescimento através do <strong>Gráfico de Barras</strong> interativo no Mapa de Níveis, visualizando estrelas conquistadas e pontuação em cada etapa.
             </p>
           </div>
         </div>
