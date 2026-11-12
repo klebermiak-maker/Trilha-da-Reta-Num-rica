@@ -28,6 +28,7 @@ import { NumberLineCanvas, toPosKey } from './components/NumberLineCanvas';
 import { ObjectIllustration } from './components/ObjectIllustration';
 import { PerformanceReport } from './components/PerformanceReport';
 import { GoogleDriveSync } from './components/GoogleDriveSync';
+import { InteractiveTutorialModal } from './components/InteractiveTutorialModal';
 import { initAuth, googleSignIn } from './services/googleAuth';
 import { sound } from './utils/sound';
 
@@ -59,6 +60,27 @@ export default function App() {
     type: 'success' | 'partial' | 'info';
     message: string;
   } | null>(null);
+
+  // Interactive tutorial state
+  const [isTutorialOpen, setIsTutorialOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const accepted = localStorage.getItem('trilha_reta_numerica_tutorial_accepted');
+      return accepted !== 'true';
+    }
+    return false;
+  });
+
+  const handleAcceptTutorial = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('trilha_reta_numerica_tutorial_accepted', 'true');
+    }
+    setIsTutorialOpen(false);
+    sound.playSuccess();
+    setFeedbackBanner({
+      type: 'success',
+      message: 'Tutorial concluído com sucesso! Comece arrastando os cartões para a reta numérica.',
+    });
+  };
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -559,6 +581,16 @@ export default function App() {
                   className="p-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {isMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-sky-600" />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsTutorialOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-sky-800 bg-sky-50 border border-sky-200 rounded-lg hover:bg-sky-100 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                  title="Abrir o tutorial interativo passo a passo"
+                >
+                  <HelpCircle className="w-3.5 h-3.5 text-sky-600" />
+                  Tutorial
                 </button>
 
                 <button
@@ -1331,6 +1363,12 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Interactive Step-by-Step Tutorial Modal */}
+      <InteractiveTutorialModal
+        isOpen={isTutorialOpen}
+        onAcceptAndAgree={handleAcceptTutorial}
+      />
 
       {/* Quiet Footer */}
       <footer className="border-t border-slate-200 bg-white px-6 py-4 mt-12">
